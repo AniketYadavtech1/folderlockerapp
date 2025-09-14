@@ -1,44 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:folderlockerapp/view/folder/ui/folder_locker.dart';
+import 'package:folderlockerapp/view/pin/controller/pin_controller.dart';
+import 'package:get/get.dart';
 
-import 'view/pin/ui/pin_create.dart';
-
-final scaffoldKey = GlobalKey<ScaffoldState>();
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarBrightness: Brightness.light,
-      statusBarIconBrightness: Brightness.dark,
-      statusBarColor: Colors.transparent,
-    ),
-  );
-
-  runApp(const FolderLockerApp());
+void main() {
+  runApp(const MyApp());
 }
 
-class FolderLockerApp extends StatelessWidget {
-  const FolderLockerApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(360, 690),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, child) {
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          darkTheme: ThemeData.dark(),
-          theme: ThemeData.light(),
-          home: const PinCheckScreen(),
+    // Inject controller globally
+    final PinController pinController = Get.put(PinController());
+
+    return GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Folder Locker App',
+        theme: ThemeData(primarySwatch: Colors.blue),
+        // Decide initial screen dynamically
+        home: LockedFoldersScreen()
+        // Obx(() {
+        //   if (pinController.isPinCreated.value) {
+        //     return VerifyPinScreen(); // If PIN already set → verify screen
+        //   } else {
+        //     return CreatePinScreen(); // If no PIN → create PIN screen
+        //   }
+        // }),
         );
-      },
-    );
   }
 }
