@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:folderlockerapp/view/folder/controller/controller.dart';
+import 'package:folderlockerapp/view/themes/newutill/ui/theme_setting_page.dart';
 import 'package:get/get.dart';
 
 class LockedFoldersScreen extends StatelessWidget {
@@ -13,6 +14,11 @@ class LockedFoldersScreen extends StatelessWidget {
       appBar: AppBar(title: const Text("Folder Locker")),
       body: Column(
         children: [
+          TextButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ThemeSettingsScreen()));
+              },
+              child: Text("setting")),
           Padding(
             padding: const EdgeInsets.all(12),
             child: Wrap(

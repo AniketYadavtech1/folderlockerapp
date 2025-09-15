@@ -91,13 +91,13 @@ class FolderLockerController extends GetxController {
   }
 
   Future<void> pickAndLockFolder({required bool moveInsteadOfCopy}) async {
-    // ✅ 1. Request storage permission
+    // 1. Request storage permission
     if (await Permission.storage.request().isDenied && await Permission.manageExternalStorage.request().isDenied) {
       Get.snackbar("Permission Denied", "Please allow storage permission!");
       return;
     }
 
-    // ✅ 2. Pick folder (always start from /storage/emulated/0)
+    //  2. Pick folder (always start from /storage/emulated/0)
     String? selectedDir = await FilePicker.platform.getDirectoryPath(
       dialogTitle: "Select a folder to lock",
       initialDirectory: "/storage/emulated/0",
@@ -111,7 +111,7 @@ class FolderLockerController extends GetxController {
       return;
     }
 
-    // ✅ 3. Prepare folder name and destination
+    //  3. Prepare folder name and destination
     final folderName = srcDir.uri.pathSegments.where((s) => s.isNotEmpty).last;
 
     final appDocDir = await getApplicationDocumentsDirectory();
@@ -122,14 +122,14 @@ class FolderLockerController extends GetxController {
     final destDir = Directory('${destParent.path}/$id\_$folderName');
 
     try {
-      // ✅ 4. Copy folder into app’s private storage
+      // 4. Copy folder into app’s private storage
       await _copyDirectory(srcDir, destDir);
 
-      // ✅ 5. Hide from gallery
+      // 5. Hide from gallery
       final nomedia = File('${destDir.path}/.nomedia');
       if (!await nomedia.exists()) await nomedia.create();
 
-      // ✅ 6. If moveInsteadOfCopy = true → delete original folder
+      // 6. If moveInsteadOfCopy = true → delete original folder
       if (moveInsteadOfCopy) {
         try {
           await srcDir.delete(recursive: true);
@@ -138,7 +138,7 @@ class FolderLockerController extends GetxController {
         }
       }
 
-      // ✅ 7. Save locked folder info
+      // 7. Save locked folder info
       final lockedFolder = LockedFolder(
         id: id,
         originalPath: selectedDir,
@@ -156,7 +156,7 @@ class FolderLockerController extends GetxController {
   }
 
   Future<void> unlockFolder(LockedFolder lockedFolder, {bool moveInsteadOfCopy = true}) async {
-    // ✅ 1. Request storage permission
+    //  1. Request storage permission
     if (await Permission.storage.request().isDenied && await Permission.manageExternalStorage.request().isDenied) {
       Get.snackbar("Permission Denied", "Please allow storage permission!");
       return;
@@ -166,16 +166,16 @@ class FolderLockerController extends GetxController {
       Get.snackbar("Error", "Locked folder not found in app storage.");
       return;
     }
-    // ✅ 2. Destination = Original path (where it was before locking)
+    //  2. Destination = Original path (where it was before locking)
     final destDir = Directory(lockedFolder.originalPath);
     if (!await destDir.exists()) {
       await destDir.create(recursive: true);
     }
     try {
-      // ✅ 3. Copy back to original internal storage path
+      //  3. Copy back to original internal storage path
       await _copyDirectory(srcDir, destDir, ignoreNomedia: true);
 
-      // ✅ 4. If moveInsteadOfCopy = true → delete from app storage
+      //  4. If moveInsteadOfCopy = true → delete from app storage
       if (moveInsteadOfCopy) {
         try {
           await srcDir.delete(recursive: true);
@@ -184,7 +184,7 @@ class FolderLockerController extends GetxController {
         }
       }
 
-      // ✅ 5. Remove from locked index
+      //  5. Remove from locked index
       lockedFolders.removeWhere((f) => f.id == lockedFolder.id);
       // await _saveIndex();
 
