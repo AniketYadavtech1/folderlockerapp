@@ -2,14 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:folderlockerapp/view/folder/controller/controller.dart';
 import 'package:get/get.dart';
 
-class LockedFoldersScreen extends StatefulWidget {
+class LockedFoldersScreen extends StatelessWidget {
   const LockedFoldersScreen({super.key});
 
-  @override
-  State<LockedFoldersScreen> createState() => _LockedFoldersScreenState();
-}
-
-class _LockedFoldersScreenState extends State<LockedFoldersScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(FolderLockerController());
@@ -57,7 +52,7 @@ class _LockedFoldersScreenState extends State<LockedFoldersScreen> {
                       isThreeLine: true,
                       trailing: IconButton(
                         icon: const Icon(Icons.lock_open),
-                        onPressed: () => controller.unlockAndRestore(l),
+                        onPressed: () => controller.unlockFolder(l),
                       ),
                     ),
                   );
