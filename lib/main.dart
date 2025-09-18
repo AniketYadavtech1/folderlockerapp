@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:folderlockerapp/view/folder/ui/folder_locker.dart';
+import 'package:folderlockerapp/view/auth/ui/new_biomatric.dart';
 import 'package:folderlockerapp/view/pin/controller/pin_controller.dart';
 import 'package:folderlockerapp/view/themes/controller/theme_controller.dart';
 import 'package:get/get.dart';
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Folder Locker App',
         theme: themeController.themeData,
-        home: LockedFoldersScreen(),
+        home: BiometricAuthScreen(),
       );
     });
   }

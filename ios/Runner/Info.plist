@@ -50,14 +50,11 @@
     	<!-- ✅ Face ID -->
     	<key>NSFaceIDUsageDescription</key>
         <string>This app uses Face ID to unlock your secure folders.</string>
-
-    	<!-- ✅ Photos & Files Permissions -->
+    	<!--Photos & Files Permissions -->
     	<key>NSPhotoLibraryUsageDescription</key>
     	<string>This app needs access to your photo library.</string>
-
     	<key>NSPhotoLibraryAddUsageDescription</key>
     	<string>This app needs permission to save files to your photo library.</string>
-
     	<key>NSDocumentsFolderUsageDescription</key>
     	<string>This app needs access to your documents.</string>
 </dict>
