@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:folderlockerapp/view/folder/controller/controller.dart';
-import 'package:folderlockerapp/view/themes/newutill/ui/theme_setting_page.dart';
 import 'package:get/get.dart';
 
-class LockedFoldersScreen extends StatelessWidget {
-  const LockedFoldersScreen({super.key});
+import '../controller/controller.dart';
+import 'folder_content.dart';
+
+class NewLockedFoldersScreen extends StatelessWidget {
+  const NewLockedFoldersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +15,6 @@ class LockedFoldersScreen extends StatelessWidget {
       appBar: AppBar(title: const Text("Folder Locker")),
       body: Column(
         children: [
-          TextButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ThemeSettingsScreen()));
-              },
-              child: Text("setting")),
           Padding(
             padding: const EdgeInsets.all(12),
             child: Wrap(
@@ -47,11 +43,31 @@ class LockedFoldersScreen extends StatelessWidget {
                   return Card(
                     child: ListTile(
                       title: Text(l.originalPath.split('/').last),
-                      subtitle: Text("Locked at: ${l.lockedAt.toLocal().toString()}\nStored: ${l.storedPath}"),
+                      subtitle: Text(
+                        "Locked at: ${l.lockedAt.toLocal()}\nStored: ${l.storedPath}",
+                      ),
                       isThreeLine: true,
-                      trailing: IconButton(
-                        icon: const Icon(Icons.lock_open),
-                        onPressed: () => controller.unlockFolder(l),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.folder_open),
+                            tooltip: "Open Folder",
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => FolderContentScreen(folder: l),
+                                ),
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.lock_open),
+                            tooltip: "Unlock Folder",
+                            onPressed: () => controller.unlockFolder(l),
+                          ),
+                        ],
                       ),
                     ),
                   );

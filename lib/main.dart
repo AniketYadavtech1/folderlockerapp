@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:folderlockerapp/view/auth/ui/new_biomatric.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:folderlockerapp/view/folder/ui/new_folder_locker.dart';
 import 'package:folderlockerapp/view/pin/controller/pin_controller.dart';
 import 'package:folderlockerapp/view/themes/controller/theme_controller.dart';
 import 'package:get/get.dart';
@@ -16,27 +17,19 @@ class MyApp extends StatelessWidget {
     final PinController pinController = Get.put(PinController());
     final ThemeController themeController = Get.put(ThemeController());
 
-    // return GetMaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   title: 'Folder Locker App',
-    //   theme: ThemeData(primarySwatch: Colors.blue),
-    //   home: LockedFoldersScreen(),
-    //
-    //   // Obx(() {
-    //   //   if (pinController.isPinCreated.value) {
-    //   //     return VerifyPinScreen();
-    //   //   } else {
-    //   //     return CreatePinScreen();
-    //   //   }
-    //   // }),
-    // );
-    return Obx(() {
-      return GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Folder Locker App',
-        theme: themeController.themeData,
-        home: BiometricAuthScreen(),
-      );
-    });
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return Obx(() => GetMaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Folder Locker App',
+              theme: themeController.themeData,
+              // home: LockedFoldersScreen(),
+              home: NewLockedFoldersScreen(),
+            ));
+      },
+    );
   }
 }

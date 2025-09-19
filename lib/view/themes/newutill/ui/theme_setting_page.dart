@@ -144,7 +144,7 @@ class ThemeSettingsScreen extends StatelessWidget {
                   visible: themeController.isSelectedColor.value == 1,
                   child: Column(
                     children: [
-                      Text("Choose Font Family", style: AppTextStyles.kHeading2TextStyle),
+                      Text("Choose Font Family", style: AppTextStyles.kBody17RegularTextStyle),
                       height14,
                       GridView.builder(
                         shrinkWrap: true,
