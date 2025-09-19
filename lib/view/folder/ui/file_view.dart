@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:pdfx/pdfx.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 
 class FileViewScreen extends StatelessWidget {
   final FileSystemEntity file;
@@ -32,14 +32,13 @@ class FileViewScreen extends StatelessWidget {
         child: Text(text),
       );
     } else if (extension == "pdf") {
-      // ✅ PDF Preview using pdfx
-      final pdfController = PdfController(
-        document: PdfDocument.openFile(file.path),
-      );
-
-      content = PdfView(
-        controller: pdfController,
-        scrollDirection: Axis.vertical,
+      // ✅ PDF Preview using flutter_pdfview
+      content = PDFView(
+        filePath: file.path,
+        enableSwipe: true,
+        swipeHorizontal: false,
+        autoSpacing: true,
+        pageFling: true,
       );
     } else {
       // ✅ Generic Fallback

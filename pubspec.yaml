@@ -50,7 +50,7 @@ dependencies:
   fluttertoast: ^8.2.12
   device_info_plus: ^11.3.0
   google_fonts: ^6.3.0
-  pdfx: ^2.9.2
+  flutter_pdfview: ^1.4.1+1
 
 
 
