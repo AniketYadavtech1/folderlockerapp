@@ -22,10 +22,10 @@ class FileViewScreen extends StatelessWidget {
 
     Widget content;
     if (["png", "jpg", "jpeg", "gif"].contains(extension)) {
-      // ✅ Image Preview
+      //  Image Preview
       content = Image.file(File(file.path), fit: BoxFit.contain);
     } else if (["txt", "log", "json", "md"].contains(extension)) {
-      // ✅ Text Preview
+      //  Text Preview
       final text = File(file.path).readAsStringSync();
       content = SingleChildScrollView(
         padding: const EdgeInsets.all(12),

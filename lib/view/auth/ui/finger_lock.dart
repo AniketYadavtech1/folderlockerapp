@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:folderlockerapp/view/auth/auth_controller/auth_controller.dart';
 import 'package:folderlockerapp/view/auth/ui/storage.dart';
-import 'package:folderlockerapp/view/folder/ui/home_screen.dart';
 import 'package:get/get.dart';
 
 class LockScreen extends StatelessWidget {
@@ -21,7 +20,7 @@ class LockScreen extends StatelessWidget {
         child: Obx(() {
           if (controller.isAuthenticated.value) {
             Future.delayed(Duration.zero, () {
-              Get.off(() => const HomeScreen()); // unlock hone ke baad HomePage
+              // Get.off(() => const HomeScreen()); // unlock hone ke baad HomePage
             });
           }
 
