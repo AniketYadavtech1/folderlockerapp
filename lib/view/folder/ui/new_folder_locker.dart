@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../medial/new.dart';
 import '../controller/controller.dart';
 import 'folder_content.dart';
 
@@ -9,7 +10,7 @@ class NewLockedFoldersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(FolderLockerController());
+    final controller = Get.put(FolderLockers());
 
     return Scaffold(
       appBar: AppBar(title: const Text("Folder Locker")),
@@ -26,6 +27,13 @@ class NewLockedFoldersScreen extends StatelessWidget {
                   onPressed: () => controller.pickAndLockFolder(
                     moveInsteadOfCopy: true,
                   ),
+                ),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.move_to_inbox),
+                  label: const Text("pick_image_video"),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => MediaLocker()));
+                  },
                 ),
               ],
             ),

@@ -22,7 +22,6 @@ class _MediaLockerScreenssState extends State<MediaLockerScreenss> {
         if (controller.lockedFolders.isEmpty) {
           return const Center(child: Text("No locked folders"));
         }
-
         return ListView.builder(
           itemCount: controller.lockedFolders.length,
           itemBuilder: (context, index) {

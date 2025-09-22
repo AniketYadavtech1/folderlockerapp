@@ -28,24 +28,56 @@ class FolderContentScreen extends StatelessWidget {
       ),
       body: files.isEmpty
           ? const Center(child: Text("No files inside this folder."))
-          : ListView.builder(
+          : GridView.builder(
+              shrinkWrap: true,
               itemCount: files.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: 1,
+              ),
               itemBuilder: (_, i) {
                 final file = files[i];
                 final name = file.path.split('/').last;
-
-                return Card(
-                  child: ListTile(
-                    leading: const Icon(Icons.insert_drive_file),
-                    title: Text(name),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => FileViewScreen(file: file),
+                if (name == ".nomedia") {
+                  return const SizedBox();
+                }
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => FileViewScreen(file: file),
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            name.isEmpty
+                                ? const Icon(Icons.error, color: Colors.grey, size: 30)
+                                : const Icon(Icons.picture_as_pdf, color: Colors.red, size: 30),
+                            const SizedBox(height: 10),
+                            Text(
+                              name.isEmpty ? "No file available" : name,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ],
                         ),
-                      );
-                    },
+                      ),
+                    ),
                   ),
                 );
               },

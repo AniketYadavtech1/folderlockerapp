@@ -8,7 +8,7 @@ class LockedFoldersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(FolderLockerController());
+    final controller = Get.put(FolderLockers());
 
     return Scaffold(
       appBar: AppBar(title: const Text("Folder Locker")),

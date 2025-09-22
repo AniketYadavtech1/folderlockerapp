@@ -34,7 +34,7 @@ class LockedFolder {
       );
 }
 
-class FolderLockerController extends GetxController {
+class FolderLockers extends GetxController {
   final RxList<LockedFolder> lockedFolders = <LockedFolder>[].obs;
   late Directory appDocDir;
   final String indexFileName = 'locked_index.json';
@@ -94,14 +94,12 @@ class FolderLockerController extends GetxController {
       dialogTitle: "Select a folder to lock",
       initialDirectory: "/storage/emulated/0",
     );
-
     if (selectedDir == null) return;
     final srcDir = Directory(selectedDir);
     if (!await srcDir.exists()) {
       Get.snackbar("Error", "Selected folder does not exist.");
       return;
     }
-
     final folderName = srcDir.uri.pathSegments.where((s) => s.isNotEmpty).last;
     final appDocDir = await getApplicationDocumentsDirectory();
     final destParent = Directory('${appDocDir.path}/LockedFolders');
@@ -109,7 +107,6 @@ class FolderLockerController extends GetxController {
 
     final id = DateTime.now().millisecondsSinceEpoch.toString();
     final destDir = Directory('${destParent.path}/$id\_$folderName');
-
     try {
       await copyDirectory(srcDir, destDir);
       final nomedia = File('${destDir.path}/.nomedia');
@@ -127,7 +124,6 @@ class FolderLockerController extends GetxController {
         storedPath: destDir.path,
         lockedAt: DateTime.now(),
       );
-
       lockedFolders.add(lockedFolder);
       await saveIndex();
       Get.snackbar("Success", "Folder locked securely!");

@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkPermission();
   }
 
-  final con = Get.put(FolderLockerController());
+  final con = Get.put(FolderLockers());
 
   Future<void> _checkPermission() async {
     await Future.delayed(const Duration(seconds: 2)); // splash delay
