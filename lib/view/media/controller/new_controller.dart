@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
-import 'package:media_scanner/media_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LockedMedia {
@@ -117,7 +116,7 @@ class MediaLockerController extends GetxController {
 
       if (moveInsteadOfCopy) await file.delete();
 
-      MediaScanner.loadMedia(path: restoredFile.path);
+      // MediaScanner.loadMedia(path: restoredFile.path);
 
       // Remove from folder
       for (var folder in lockedFolders) {

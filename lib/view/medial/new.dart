@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:video_player/video_player.dart';
 
 class LockedMedia {
@@ -96,37 +97,114 @@ class MediaLockerController extends GetxController {
   //   }
   //
   //   FilePickerResult? result = await FilePicker.platform.pickFiles(
-  //     type: FileType.media,
+  //     type: FileType.image,
   //     allowMultiple: true,
   //   );
   //
   //   if (result == null) return;
+  //
   //   List<String> selectedPaths = result.paths.whereType<String>().toList();
-  //   try {
-  //     for (var path in selectedPaths) {
-  //       final file = File(path);
-  //       final isVideo = path.endsWith(".mp4") || path.endsWith(".mov");
-  //       final newFileName = "${DateTime.now().millisecondsSinceEpoch}_${file.uri.pathSegments.last}";
-  //       final storedFile = File("${lockFolder.path}/$newFileName");
   //
-  //       await storedFile.writeAsBytes(await file.readAsBytes());
-  //       if (await file.exists()) await file.delete();
+  //   for (var path in selectedPaths) {
+  //     final file = File(path);
+  //     final isVideo = path.endsWith(".mp4") || path.endsWith(".mov");
   //
+  //     final newFileName = "${DateTime.now().millisecondsSinceEpoch}_${file.uri.pathSegments.last}";
+  //     final storedFile = File("${lockFolder.path}/$newFileName");
+  //
+  //     try {
+  //       // ✅ Copy + Delete instead of rename
+  //       final movedFile = await file.copy(storedFile.path);
+  //       if (await file.exists()) {
+  //         await file.delete();
+  //       }
+  //
+  //       // ✅ Refresh gallery to remove old entry
+  //       await MediaScanner.loadMedia(path: path);
+  //
+  //       // Save info
   //       final lockedMedia = LockedMedia(
   //         id: DateTime.now().millisecondsSinceEpoch.toString(),
   //         originalPath: path,
-  //         storedPath: storedFile.path,
+  //         storedPath: movedFile.path,
   //         lockedAt: DateTime.now(),
   //         isVideo: isVideo,
   //       );
   //
   //       lockedMediaList.add(lockedMedia);
+  //     } catch (e) {
+  //       Get.snackbar("Error", e.toString());
   //     }
-  //     await saveIndex();
-  //     Get.snackbar("Success", "${selectedPaths.length} files locked securely!");
-  //   } catch (e) {
-  //     Get.snackbar("Error", e.toString());
   //   }
+  //
+  //   await saveIndex();
+  //   Get.snackbar("Success", "${selectedPaths.length} files locked securely!");
+  // }
+
+  // Future<void> pickAndLockMedia() async {
+  //   if (await Permission.storage.request().isDenied && await Permission.manageExternalStorage.request().isDenied) {
+  //     Get.snackbar("Permission Denied", "Please allow storage permission!");
+  //     return;
+  //   }
+  //
+  //   FilePickerResult? result = await FilePicker.platform.pickFiles(
+  //     type: FileType.image,
+  //     allowMultiple: true,
+  //   );
+  //
+  //   if (result == null) return;
+  //
+  //   List<String> selectedPaths = result.paths.whereType<String>().toList();
+  //
+  //   for (var path in selectedPaths) {
+  //     final file = File(path);
+  //     final isVideo = path.endsWith(".mp4") || path.endsWith(".mov");
+  //
+  //     final newFileName = "${DateTime.now().millisecondsSinceEpoch}_${file.uri.pathSegments.last}";
+  //     final storedFile = File("${lockFolder.path}/$newFileName");
+  //
+  //     try {
+  //       // Copy file to hidden folder
+  //       final movedFile = await file.copy(storedFile.path);
+  //
+  //       // Delete original file
+  //       if (await file.exists()) {
+  //         await file.delete();
+  //
+  //         // ❌ Remove from gallery using photo_manager
+  //         final assetPath = await PhotoManager.getAssetPathList(
+  //           onlyAll: true,
+  //           type: isVideo ? RequestType.video : RequestType.image,
+  //         );
+  //
+  //         for (var pathItem in assetPath) {
+  //           final assets = await pathItem.getAssetListRange(start: 0, end: 1000); // get assets
+  //           for (var asset in assets) {
+  //             final fileData = await asset.file;
+  //             if (fileData != null && fileData.path == path) {
+  //               await PhotoManager.editor.deleteWithIds([asset.id]);
+  //             }
+  //           }
+  //         }
+  //       }
+  //
+  //       // Save info
+  //       final lockedMedia = LockedMedia(
+  //         id: DateTime.now().millisecondsSinceEpoch.toString(),
+  //         originalPath: path,
+  //         storedPath: movedFile.path,
+  //         lockedAt: DateTime.now(),
+  //         isVideo: isVideo,
+  //       );
+  //
+  //       lockedMediaList.add(lockedMedia);
+  //     } catch (e) {
+  //       Get.snackbar("Error", e.toString());
+  //     }
+  //   }
+  //
+  //   await saveIndex();
+  //   Get.snackbar("Success", "${selectedPaths.length} files locked securely!");
   // }
 
   Future<void> pickAndLockMedia() async {
@@ -141,33 +219,66 @@ class MediaLockerController extends GetxController {
     );
 
     if (result == null) return;
+
     List<String> selectedPaths = result.paths.whereType<String>().toList();
 
-    try {
-      for (var path in selectedPaths) {
-        final file = File(path);
-        final isVideo = path.endsWith(".mp4") || path.endsWith(".mov");
-        final newFileName = "${DateTime.now().millisecondsSinceEpoch}_${file.uri.pathSegments.last}";
-        final storedFile = File("${lockFolder.path}/$newFileName");
+    for (var path in selectedPaths) {
+      final file = File(path);
+      final isVideo = path.endsWith(".mp4") || path.endsWith(".mov");
 
-        // Move file to hidden folder
-        await file.rename(storedFile.path);
+      final newFileName = "${DateTime.now().millisecondsSinceEpoch}_${file.uri.pathSegments.last}";
+      final storedFile = File("${lockFolder.path}/$newFileName");
 
+      try {
+        // ✅ Copy file to hidden folder (with .nomedia)
+        final movedFile = await file.copy(storedFile.path);
+
+        // ✅ Delete original file from gallery folder
+        if (await file.exists()) {
+          await file.delete();
+        }
+        await refreshGallery(newFileName);
+
+        // ❌ Ab gallery me manually remove mat karo
+        // .nomedia folder me hone se ye automatically gallery me nahi dikhega
+
+        // Save info
         final lockedMedia = LockedMedia(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
           originalPath: path,
-          storedPath: storedFile.path,
+          storedPath: movedFile.path,
           lockedAt: DateTime.now(),
           isVideo: isVideo,
         );
 
         lockedMediaList.add(lockedMedia);
+      } catch (e) {
+        Get.snackbar("Error", e.toString());
       }
+    }
 
-      await saveIndex();
-      Get.snackbar("Success", "${selectedPaths.length} files locked securely!");
+    await saveIndex();
+    Get.snackbar("Success", "${selectedPaths.length} files locked securely!");
+  }
+
+  Future<void> refreshGallery(String path) async {
+    try {
+      final assetPathList = await PhotoManager.getAssetPathList(
+        onlyAll: true,
+        type: RequestType.image,
+      );
+
+      for (var album in assetPathList) {
+        final assets = await album.getAssetListRange(start: 0, end: 1000);
+        for (var asset in assets) {
+          final file = await asset.file;
+          if (file != null && file.path == path) {
+            await PhotoManager.editor.deleteWithIds([asset.id]);
+          }
+        }
+      }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      print("Gallery refresh error: $e");
     }
   }
 
