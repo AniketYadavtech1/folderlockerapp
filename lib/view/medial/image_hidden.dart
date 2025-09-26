@@ -37,58 +37,43 @@ class _SecureImageVaultState extends State<SecureImageVault> {
       Get.snackbar("Permission Denied", "Please allow storage permission!");
       return;
     }
-
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['jpg', 'jpeg', 'png'],
     );
-
     if (result != null && result.files.single.path != null) {
       File pickedFile = File(result.files.single.path!);
-
       // App-private storage
       final appDir = await getApplicationDocumentsDirectory();
       final newPath = '${appDir.path}/${DateTime.now().millisecondsSinceEpoch}.png';
-
       // Copy to vault
       final newFile = await pickedFile.copy(newPath);
-
       // Delete from gallery
       await pickedFile.delete();
-
       // Save path in DB
       await DBHelper.insertImage(newFile.path);
-
       setState(() {
         lockedImages.add(newFile);
       });
-
-      debugPrint("✅ Locked: ${newFile.path}");
+      debugPrint("Locked: ${newFile.path}");
     }
   }
 
   // Unlock Image
   Future<void> unlockImage(File lockedFile) async {
     final picturesDir = Directory('/storage/emulated/0/Pictures');
-
     if (!picturesDir.existsSync()) {
       picturesDir.createSync(recursive: true);
     }
-
     final restoredPath = '${picturesDir.path}/restored_${DateTime.now().millisecondsSinceEpoch}.png';
-
     final restoredFile = await lockedFile.copy(restoredPath);
-
     // Delete from vault
     await lockedFile.delete();
-
     // Remove from DB
     await DBHelper.deleteImage(lockedFile.path);
-
     setState(() {
       lockedImages.remove(lockedFile);
     });
-
     debugPrint("🔓 Restored: ${restoredFile.path}");
   }
 
