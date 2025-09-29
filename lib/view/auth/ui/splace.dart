@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:folderlockerapp/view/folder/controller/controller.dart';
-import 'package:folderlockerapp/view/folder/ui/folder_locker.dart';
+import 'package:folderlockerapp/view/home/home_view.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -15,26 +15,24 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkPermission();
+    checkPermission();
   }
 
   final con = Get.put(FolderLockers());
 
-  Future<void> _checkPermission() async {
-    await Future.delayed(const Duration(seconds: 2)); // splash delay
-    bool granted = await openAppSettings();
+  Future<void> checkPermission() async {
+    await Future.delayed(const Duration(seconds: 2));
 
+    // if (await Permission.storage.isDenied || await Permission.manageExternalStorage.isDenied) {
+    //   await Permission.manageExternalStorage.request();
+    // }
+    bool granted = (await Permission.storage.isDenied || await Permission.manageExternalStorage.isDenied);
     if (granted) {
-      //  Permission granted → Go to FolderLocker Home
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const LockedFoldersScreen()),
+        MaterialPageRoute(builder: (_) => const HomeView()),
       );
-    } else {
-      // Permission denied → Open Settings
-
-      // Exit app or retry after settings
-    }
+    } else {}
   }
 
   @override

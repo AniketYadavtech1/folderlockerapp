@@ -99,7 +99,7 @@ class CommonTextField extends StatelessWidget {
             enabled: enabled,
             obscureText: obscureText ?? false,
             inputFormatters: inputFormatters,
-            cursorColor: AppColors.primaryColor,
+            cursorColor: AppColors.black10,
             cursorErrorColor: Colors.red,
             onEditingComplete: onEditingComplete,
             onChanged: onChanged,
@@ -122,17 +122,17 @@ class CommonTextField extends StatelessWidget {
               prefix: prefix,
               focusedBorder: border ??
                   OutlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.blackColor.withOpacity(0.1)),
+                    borderSide: BorderSide(color: AppColors.black10),
                     borderRadius: BorderRadius.circular(borderRadius ?? 7),
                   ),
               enabledBorder: border ??
                   OutlineInputBorder(
-                    borderSide: BorderSide(color: borderColor ?? AppColors.blackColor.withOpacity(0.1)),
+                    borderSide: BorderSide(color: borderColor ?? AppColors.black10),
                     borderRadius: BorderRadius.circular(borderRadius ?? 7),
                   ),
               disabledBorder: border ??
                   OutlineInputBorder(
-                    borderSide: BorderSide(color: borderColor ?? AppColors.blackColor.withOpacity(0.1)),
+                    borderSide: BorderSide(color: borderColor ?? AppColors.black10),
                     borderRadius: BorderRadius.circular(borderRadius ?? 10),
                   ),
               focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(borderRadius ?? 10)),

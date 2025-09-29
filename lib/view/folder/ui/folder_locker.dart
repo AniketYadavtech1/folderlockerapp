@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:folderlockerapp/view/folder/controller/controller.dart';
-import 'package:folderlockerapp/view/themes/newutill/ui/theme_setting_page.dart';
 import 'package:get/get.dart';
+
+import '../../themes/utill/theme_setting_page.dart';
 
 class LockedFoldersScreen extends StatelessWidget {
   const LockedFoldersScreen({super.key});

@@ -5,12 +5,11 @@ import 'package:get/get.dart';
 
 class AppColors {
   static bool get isDarkMode => Get.find<ThemeController>().isDarkMode.value;
-  // static bool get isDarkMode => themeController.isDarkMode.value;
 
   static var transparent = Colors.transparent;
   static const Color black10 = Color.fromRGBO(56, 57, 58, 1.0);
-  // White and shades
   static Color get whiteAlways => Colors.white;
+
   static Color get white => isDarkMode ? CupertinoColors.darkBackgroundGray : CupertinoColors.white;
   static Color get whiteOpacity20 => const Color.fromRGBO(255, 255, 255, 0.3);
   static Color get white10 => isDarkMode ? const Color(0xFF1C1C1E) : const Color(0xFFF6F8FC);
@@ -24,9 +23,6 @@ class AppColors {
   static Color get white90 => isDarkMode ? const Color(0xFFD1D1D6) : const Color(0xFF1E2A3B);
   static Color get white100 => isDarkMode ? const Color(0xFFE5E5EA) : const Color(0xFF0F1A2A);
 
-  // Primary
-  // static Color get primary => isDarkMode ? info60??const Color(0xFFEB144C) : info80??const Color(0xFFD51B5F);
-  // static Color get primary => isDarkMode ?const Color(0xFF245EDA):const Color(0xFF0037B3);
   static Color get primary => Get.find<ThemeController>().primaryColor.value;
   static Color get primary1 => isDarkMode ? const Color(0xFFED416C) : const Color(0xFFD91A5E);
   static Color get primary400 => isDarkMode ? const Color(0xFFB8133E) : const Color(0xFFFACEE1);
@@ -43,16 +39,13 @@ class AppColors {
   static Color get success80 => isDarkMode ? const Color(0xFF70D494) : const Color(0xFF00401C);
   static Color get success100 => isDarkMode ? const Color(0xFFA4F2C2) : const Color(0xFF002611);
 
-  static Color get successOp => isDarkMode
-      ? const Color.fromRGBO(44, 62, 45, 1.0) // A darker tone for dark mode
-      : const Color.fromRGBO(216, 253, 210, 1.0); // Your original light mode color
-  static Color get success32 => isDarkMode
-      ? const Color.fromRGBO(3, 150, 113, 1.0) // Example darker green for dark mode
-      : const Color.fromRGBO(6, 207, 156, 1.0); // Original for light mode
+  static Color get successOp =>
+      isDarkMode ? const Color.fromRGBO(44, 62, 45, 1.0) : const Color.fromRGBO(216, 253, 210, 1.0);
+  static Color get success32 =>
+      isDarkMode ? const Color.fromRGBO(3, 150, 113, 1.0) : const Color.fromRGBO(6, 207, 156, 1.0);
 
-  static Color get success30 => isDarkMode
-      ? const Color.fromRGBO(20, 160, 80, 1.0) // Darker green for dark mode
-      : const Color.fromRGBO(37, 211, 102, 1.0);
+  static Color get success30 =>
+      isDarkMode ? const Color.fromRGBO(20, 160, 80, 1.0) : const Color.fromRGBO(37, 211, 102, 1.0);
   static Color get info10 => isDarkMode ? const Color(0xFF0D1B39) : const Color(0xFFD3E1FE);
   static Color get info20 => isDarkMode ? const Color(0xFF12367A) : const Color(0xFF7EA5F8);
   static Color get info40 => isDarkMode ? const Color(0xFF2D5FC2) : const Color(0xFF4D82F3);
@@ -61,9 +54,8 @@ class AppColors {
 
   static Color get error10 => isDarkMode ? const Color(0xFF2E0C0C) : const Color(0xFFFFEBEB);
   static Color get error20 => isDarkMode ? const Color(0xFF6D1414) : const Color(0xFFFC9595);
-  // static Color get error40 => /* error20;*/
-  //     isDarkMode ? const Color(0xFFB82121) : const Color(0xFFD83232);
-  static Color get error40 => /* error20;*/
+
+  static Color get error40 =>
       isDarkMode ? Colors.redAccent ?? const Color(0xFFB82121) : Colors.redAccent ?? const Color(0xE6D83232);
   static Color get error60 => isDarkMode ? const Color(0xFFE24B4B) : const Color(0xFFB01212);
   static Color get error80 => isDarkMode ? const Color(0xFFFF8080) : const Color(0xFF8C0000);
@@ -76,7 +68,6 @@ class AppColors {
   static Color get warning80 => isDarkMode ? const Color(0xFFFFBE57) : const Color(0xFF724B00);
   static Color get warning100 => isDarkMode ? const Color(0xFFFFD181) : const Color(0xFF4D2900);
 
-  // final highlightColor = isDark ? Colors.grey[500]! : Colors.grey[100]!;
   static Color get baseColor => isDarkMode ? Colors.grey[700]! : Colors.grey[100]!;
   static Color get highlightColor => isDarkMode ? Colors.grey[500]! : Colors.grey[400]!;
 }

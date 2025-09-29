@@ -19,9 +19,7 @@ class LockScreen extends StatelessWidget {
       body: Center(
         child: Obx(() {
           if (controller.isAuthenticated.value) {
-            Future.delayed(Duration.zero, () {
-              // Get.off(() => const HomeScreen()); // unlock hone ke baad HomePage
-            });
+            Future.delayed(Duration.zero, () {});
           }
 
           return Column(

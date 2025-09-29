@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'app_colors.dart';
-import 'app_padding.dart';
 
 class AppButton extends StatelessWidget {
   final String text;
@@ -50,15 +49,15 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color effectiveBorderColor = borderColor ?? AppColors.mediumPurple;
-    final Color effectiveTextColor = textColor ?? AppColors.black;
+    final Color effectiveBorderColor = borderColor ?? AppColors.primary;
+    final Color effectiveTextColor = textColor ?? AppColors.black10;
     final Color effectiveBgColor = backgroundColor ?? AppColors.white;
     final double effectiveHeight = height ?? 45;
     final double effectiveWidth = width ?? double.infinity;
     final double effectiveRadius = borderRadius ?? 8;
     final double effectiveFontSize = fontSize ?? 14;
     final FontWeight effectiveFontWeight = fontWeight ?? FontWeight.w400;
-    final EdgeInsetsGeometry effectivePadding = padding ?? AppPaddings.h16v8;
+    final EdgeInsetsGeometry effectivePadding = EdgeInsets.symmetric(vertical: 10, horizontal: 10);
 
     return GestureDetector(
       onTap: onTap,
@@ -105,9 +104,9 @@ class AppButton extends StatelessWidget {
               Container(
                 height: 7,
                 width: 7,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.green,
+                  color: AppColors.primary,
                 ),
               ),
             ],

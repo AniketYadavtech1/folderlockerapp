@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:folderlockerapp/view/medial/new_image_hidden.dart';
+import 'package:folderlockerapp/view/auth/ui/splace.dart';
 import 'package:folderlockerapp/view/pin/controller/pin_controller.dart';
 import 'package:folderlockerapp/view/themes/controller/theme_controller.dart';
 import 'package:get/get.dart';
 
-void main() {
+Future<void> main() async {
   runApp(const MyApp());
 }
 
@@ -26,11 +26,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Folder Locker App',
             theme: themeController.themeData,
-            // home: LockedFoldersScreen(),
-            // home: NewLockedFoldersScreen(),
-            // home: MediaLockerScreen(),
-            // home: LockerDemoScreen(),
-            home: SecureImageVaultView()));
+            home: SplashScreen()));
       },
     );
   }

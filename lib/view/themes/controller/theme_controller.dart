@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:folderlockerapp/view/themes/newutill/ui/theme_literals.dart';
 import 'package:get/get.dart';
+
+import '../utill/theme_literals.dart';
 
 class ThemeController extends GetxController {
   // Observable variables

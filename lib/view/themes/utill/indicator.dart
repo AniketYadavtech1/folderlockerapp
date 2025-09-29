@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'app_colors.dart';
+import 'package:folderlockerapp/view/themes/utill/app_colors.dart';
 
 class Indicator extends StatelessWidget {
   final Color? color;
@@ -13,7 +12,7 @@ class Indicator extends StatelessWidget {
       child: SizedBox(
         height: 20,
         width: 20,
-        child: CircularProgressIndicator(color: color ?? AppColors.white),
+        child: CircularProgressIndicator(color: color ?? AppColors.black10),
       ),
     );
   }

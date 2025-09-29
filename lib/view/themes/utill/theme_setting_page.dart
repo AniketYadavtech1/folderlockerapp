@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:folderlockerapp/view/themes/controller/theme_controller.dart';
-import 'package:folderlockerapp/view/themes/newutill/ui/app_colors.dart';
-import 'package:folderlockerapp/view/themes/newutill/ui/app_texts.dart';
-import 'package:folderlockerapp/view/themes/newutill/ui/custom_choose.dart';
 import 'package:get/get.dart';
 
+import 'app_colors.dart';
 import 'app_dimention.dart';
+import 'app_texts.dart';
+import 'custom_choose.dart';
 import 'theme_literals.dart';
 
 class ThemeSettingsScreen extends StatelessWidget {
