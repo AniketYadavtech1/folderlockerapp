@@ -27,7 +27,7 @@ class _HomeViewState extends State<HomeView> {
             AppButton(
                 text: "imageHide 1",
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HiddenImage1View()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => HiddenImageView1()));
                 }),
             SizedBox(height: 20),
             AppButton(
