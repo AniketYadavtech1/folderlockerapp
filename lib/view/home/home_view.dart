@@ -3,6 +3,7 @@ import 'package:folderlockerapp/view/media/hidden_img2.dart';
 import 'package:folderlockerapp/view/themes/utill/app_button.dart';
 
 import '../media/hidden_img1.dart';
+import '../media/incrept_decreption.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -34,6 +35,11 @@ class _HomeViewState extends State<HomeView> {
                 text: "imageHide 2",
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => HiddenImageView2()));
+                }),
+            AppButton(
+                text: "Increption",
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => IncreptionDecreption()));
                 }),
           ],
         ),

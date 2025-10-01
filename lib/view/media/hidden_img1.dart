@@ -66,6 +66,7 @@ class PickController extends GetxController {
 
       final appDir = await getApplicationDocumentsDirectory();
       List<String> assetIdsToDelete = [];
+
       for (final xfile in picked) {
         final file = File(xfile.path);
 
@@ -88,11 +89,10 @@ class PickController extends GetxController {
             assetIdsToDelete.add(asset.id);
           }
         }
-        break;
       }
 
       if (assetIdsToDelete.isNotEmpty) {
-        await PhotoManager.editor.deleteWithIds(assetIdsToDelete.toList());
+        await PhotoManager.editor.deleteWithIds(assetIdsToDelete);
         debugPrint("Deleted ${assetIdsToDelete.length} selected images from gallery.");
       }
     } catch (e, st) {
@@ -109,7 +109,7 @@ class HiddenImageView1 extends StatelessWidget {
     final PickController controller = Get.put(PickController());
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Hidden Image 2")),
+      appBar: AppBar(title: const Text("Hidden Image 1")),
       body: Obx(() {
         if (controller.lockedImages.isEmpty) {
           return const Center(child: Text("No images locked yet"));
