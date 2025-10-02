@@ -33,7 +33,6 @@ class PickControllers extends GetxController {
 
     final picked = await picker.pickMultiImage();
     if (picked.isEmpty) return;
-
     for (final xfile in picked) {
       final appDir = await getApplicationDocumentsDirectory();
       final newPath = "${appDir.path}/${DateTime.now().millisecondsSinceEpoch}_${xfile.name}";
@@ -47,10 +46,8 @@ class PickControllers extends GetxController {
   Future<void> deleteFromGallery(List<XFile> pickedFiles) async {
     try {
       List<String> idsToDelete = [];
-
       final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(onlyAll: true);
       final List<AssetEntity> allAssets = await paths.first.getAssetListRange(start: 0, end: pickedFiles.length);
-
       for (final xfile in pickedFiles) {
         for (final asset in allAssets) {
           final file = await asset.file;
@@ -79,11 +76,9 @@ class PickControllers extends GetxController {
       }
       final restoredPath = '${picturesDir.path}/restored_${DateTime.now().millisecondsSinceEpoch}.jpg';
       await lockedFile.copy(restoredPath);
-
       if (await lockedFile.exists()) {
         await lockedFile.delete();
       }
-
       final key = box.keys.firstWhere(
         (k) => box.get(k) == lockedFile.path,
         orElse: () => null,
@@ -91,12 +86,36 @@ class PickControllers extends GetxController {
       if (key != null) {
         await box.delete(key);
       }
-
       lockedImages.remove(lockedFile);
       debugPrint("Unlocked to: $restoredPath");
     } catch (e) {
       debugPrint("unlockImage error: $e");
     }
+  }
+
+  Future<void> deleteLockedImage(File lockedFile) async {
+    try {
+      if (await lockedFile.exists()) {
+        await lockedFile.delete();
+      }
+      final key = box.keys.firstWhere(
+        (k) => box.get(k) == lockedFile.path,
+        orElse: () => null,
+      );
+      if (key != null) {
+        await box.delete(key);
+      }
+      lockedImages.remove(lockedFile);
+      debugPrint("Deleted locked image: ${lockedFile.path}");
+    } catch (e) {
+      debugPrint("deleteLockedImage error: $e");
+    }
+  }
+
+  void swapImages(int oldIndex, int newIndex) {
+    final temp = lockedImages[oldIndex];
+    lockedImages.removeAt(oldIndex);
+    lockedImages.insert(newIndex > oldIndex ? newIndex - 1 : newIndex, temp);
   }
 }
 
@@ -148,7 +167,20 @@ class HiddenImageView1 extends StatelessWidget {
                   controller.unlockImage(file);
                 }
               },
-              child: Image.file(file, fit: BoxFit.cover),
+              child: SizedBox(
+                child: Stack(children: [
+                  Image.file(
+                    file,
+                    fit: BoxFit.contain,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      controller.deleteLockedImage(file);
+                    },
+                  )
+                ]),
+              ),
             );
           },
         );
@@ -175,4 +207,35 @@ class FullImageView extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showNoteDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("Your gallery is not delete"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            SizedBox(height: 10),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // cancel button
+            },
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // save button
+            },
+            child: const Text("Save"),
+          ),
+        ],
+      );
+    },
+  );
 }
