@@ -1,102 +1,101 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:folderlockerapp/view/media/database.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-class PickController extends GetxController {
+class PickControllers extends GetxController {
   var lockedImages = <File>[].obs;
+  final ImagePicker picker = ImagePicker();
+  late Box<String> box;
 
   @override
   void onInit() {
     super.onInit();
+    box = Hive.box<String>('locked_images');
     loadLockedImages();
   }
 
-  Future<void> loadLockedImages() async {
-    final data = await DBHelper.getImages();
-    lockedImages.value = data.map((e) => File(e["path"])).toList();
+  void loadLockedImages() {
+    lockedImages.value = box.values.map((path) => File(path)).toList();
+  }
+
+  Future<void> pickAndLockFromGallery() async {
+    final permitted = await PhotoManager.requestPermissionExtend();
+    if (!permitted.isAuth) {
+      debugPrint("Permission denied!");
+      return;
+    }
+
+    final picked = await picker.pickMultiImage();
+    if (picked.isEmpty) return;
+
+    for (final xfile in picked) {
+      final appDir = await getApplicationDocumentsDirectory();
+      final newPath = "${appDir.path}/${DateTime.now().millisecondsSinceEpoch}_${xfile.name}";
+      final newFile = await File(xfile.path).copy(newPath);
+      await box.put(newPath, newPath);
+      lockedImages.add(newFile);
+    }
+    await deleteFromGallery(picked);
+  }
+
+  Future<void> deleteFromGallery(List<XFile> pickedFiles) async {
+    try {
+      List<String> idsToDelete = [];
+
+      final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(onlyAll: true);
+      final List<AssetEntity> allAssets = await paths.first.getAssetListRange(start: 0, end: pickedFiles.length);
+
+      for (final xfile in pickedFiles) {
+        for (final asset in allAssets) {
+          final file = await asset.file;
+          if (file != null || file?.path == xfile.path) {
+            idsToDelete.add(asset.id);
+          }
+        }
+      }
+      idsToDelete = idsToDelete.toSet().toList();
+      if (idsToDelete.isNotEmpty) {
+        final deletedList = await PhotoManager.editor.deleteWithIds(idsToDelete);
+        debugPrint("Deleted ${deletedList.length} images from gallery.");
+      } else {
+        debugPrint("No matching assets found to delete.");
+      }
+    } catch (e) {
+      debugPrint("deleteFromGallery error: $e");
+    }
   }
 
   Future<void> unlockImage(File lockedFile) async {
     try {
-      // 1. Create a folder in public storage to restore
       final picturesDir = Directory('/storage/emulated/0/Pictures/UnlockedImages');
       if (!picturesDir.existsSync()) {
         picturesDir.createSync(recursive: true);
       }
-
-      // 2. Generate a new file path
       final restoredPath = '${picturesDir.path}/restored_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      await lockedFile.copy(restoredPath);
 
-      // 3. Copy the locked image back to public storage
-      final restoredFile = await lockedFile.copy(restoredPath);
-
-      // 4. Remove from app storage
       if (await lockedFile.exists()) {
         await lockedFile.delete();
       }
 
-      // 5. Remove from DB & update UI
-      await DBHelper.deleteImage(lockedFile.path);
-      lockedImages.remove(lockedFile);
+      final key = box.keys.firstWhere(
+        (k) => box.get(k) == lockedFile.path,
+        orElse: () => null,
+      );
+      if (key != null) {
+        await box.delete(key);
+      }
 
-      debugPrint("Restored to gallery: ${restoredFile.path}");
+      lockedImages.remove(lockedFile);
+      debugPrint("Unlocked to: $restoredPath");
     } catch (e) {
       debugPrint("unlockImage error: $e");
-    }
-  }
-
-  final ImagePicker _picker = ImagePicker();
-  Future<void> pickAndLockFromGallery() async {
-    try {
-      // 1. Ask gallery permission
-      final permitted = await PhotoManager.requestPermissionExtend();
-      if (!permitted.isAuth) {
-        debugPrint("Permission denied!");
-        return;
-      }
-
-      // 2. Pick images using native gallery
-      final picked = await _picker.pickMultiImage();
-      if (picked.isEmpty) return;
-
-      final appDir = await getApplicationDocumentsDirectory();
-      List<String> assetIdsToDelete = [];
-
-      for (final xfile in picked) {
-        final file = File(xfile.path);
-
-        // 3. Copy to app folder
-        final newPath = "${appDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg";
-        final newFile = await file.copy(newPath);
-        lockedImages.add(newFile);
-
-        // 4. Delete original from gallery
-        // Get all assets in "All Photos"
-        final albums = await PhotoManager.getAssetPathList(onlyAll: true, type: RequestType.image);
-        if (albums.isEmpty) return;
-        final album = albums.first;
-        final total = await album.assetCountAsync;
-        final assets = await album.getAssetListRange(start: 0, end: total);
-        // Find the asset that matches this file path
-        for (final asset in assets) {
-          final assetFile = await asset.file;
-          if (assetFile != null || assetFile?.path == file.path) {
-            assetIdsToDelete.add(asset.id);
-          }
-        }
-      }
-
-      if (assetIdsToDelete.isNotEmpty) {
-        await PhotoManager.editor.deleteWithIds(assetIdsToDelete);
-        debugPrint("Deleted ${assetIdsToDelete.length} selected images from gallery.");
-      }
-    } catch (e, st) {
-      debugPrint("pickAndLockFromGallery error: $e\n$st");
     }
   }
 }
@@ -106,10 +105,10 @@ class HiddenImageView1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PickController controller = Get.put(PickController());
+    final PickControllers controller = Get.put(PickControllers());
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Hidden Image 1")),
+      appBar: AppBar(title: const Text("Hidden Images")),
       body: Obx(() {
         if (controller.lockedImages.isEmpty) {
           return const Center(child: Text("No images locked yet"));
@@ -125,6 +124,14 @@ class HiddenImageView1 extends StatelessWidget {
           itemBuilder: (context, index) {
             final file = controller.lockedImages[index];
             return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => FullImageView(file: file),
+                  ),
+                );
+              },
               onLongPress: () async {
                 final confirm = await showDialog<bool>(
                   context: context,
@@ -149,6 +156,22 @@ class HiddenImageView1 extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => controller.pickAndLockFromGallery(),
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class FullImageView extends StatelessWidget {
+  final File file;
+  const FullImageView({super.key, required this.file});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      backgroundColor: Colors.black,
+      body: Center(
+        child: Image.file(file, fit: BoxFit.contain),
       ),
     );
   }

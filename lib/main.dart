@@ -4,8 +4,12 @@ import 'package:folderlockerapp/view/auth/ui/splace.dart';
 import 'package:folderlockerapp/view/pin/controller/pin_controller.dart';
 import 'package:folderlockerapp/view/themes/controller/theme_controller.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/adapters.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await Hive.openBox<String>('locked_images');
   runApp(const MyApp());
 }
 

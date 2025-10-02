@@ -78,12 +78,12 @@ class PickController extends GetxController {
               return AlertDialog(
                 title: Text("Select Images (${tempSelected.length})"),
                 content: SizedBox(
-                  width: double.maxFinite,
-                  height: 400,
+                  width: MediaQuery.sizeOf(context).width,
+                  height: MediaQuery.sizeOf(context).width,
                   child: GridView.builder(
                     itemCount: allAssets.length,
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3, crossAxisSpacing: 5, mainAxisSpacing: 5),
+                        crossAxisCount: 3, crossAxisSpacing: 1, mainAxisSpacing: 5),
                     itemBuilder: (context, index) {
                       final asset = allAssets[index];
                       return FutureBuilder<File?>(
