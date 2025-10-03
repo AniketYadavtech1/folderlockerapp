@@ -111,7 +111,7 @@ class PickControllers extends GetxController {
       debugPrint("deleteLockedImage error: $e");
     }
   }
-
+////aky
   void swapImages(int oldIndex, int newIndex) {
     final temp = lockedImages[oldIndex];
     lockedImages.removeAt(oldIndex);
