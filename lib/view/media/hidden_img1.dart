@@ -47,6 +47,9 @@ class PickControllers extends GetxController {
     try {
       List<String> idsToDelete = [];
       final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(onlyAll: true);
+
+      final totalCount = await paths.first.assetCountAsync;
+
       final List<AssetEntity> allAssets = await paths.first.getAssetListRange(start: 0, end: pickedFiles.length);
       for (final xfile in pickedFiles) {
         for (final asset in allAssets) {
@@ -59,6 +62,7 @@ class PickControllers extends GetxController {
       idsToDelete = idsToDelete.toSet().toList();
       if (idsToDelete.isNotEmpty) {
         final deletedList = await PhotoManager.editor.deleteWithIds(idsToDelete);
+        print("Aniket${deletedList.length}");
         debugPrint("Deleted ${deletedList.length} images from gallery.");
       } else {
         debugPrint("No matching assets found to delete.");
@@ -111,6 +115,7 @@ class PickControllers extends GetxController {
       debugPrint("deleteLockedImage error: $e");
     }
   }
+
 ////aky
   void swapImages(int oldIndex, int newIndex) {
     final temp = lockedImages[oldIndex];
