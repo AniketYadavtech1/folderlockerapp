@@ -61,6 +61,10 @@ dependencies:
   hive_flutter: ^1.1.0
   flutter_media_delete: ^1.0.1
   reorderables: ^0.6.0
+  wechat_assets_picker: ^9.8.0
+  share_plus: ^11.1.0
+  flutter_windowmanager: ^0.2.0
+
 
 
 

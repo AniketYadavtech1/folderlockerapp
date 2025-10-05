@@ -22,7 +22,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> checkPermission() async {
     await Future.delayed(const Duration(seconds: 2));
-
     // if (await Permission.storage.isDenied || await Permission.manageExternalStorage.isDenied) {
     //   await Permission.manageExternalStorage.request();
     // }

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:folderlockerapp/view/fmedia/ui/media.dart';
 import 'package:folderlockerapp/view/media/hidden_img2.dart';
 import 'package:folderlockerapp/view/themes/utill/app_button.dart';
+import 'package:get/get.dart';
 
+import '../media/controller/pic_con.dart';
 import '../media/hidden_img1.dart';
 import '../media/incrept_decreption.dart';
+import '../media/ui/media_screen.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -13,6 +17,8 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final con = Get.put(MediaController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +46,17 @@ class _HomeViewState extends State<HomeView> {
                 text: "Increption",
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => IncreptionDecreption()));
+                }),
+            SizedBox(height: 20),
+            AppButton(
+                text: "MediaScreen",
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => MediaScreenView()));
+                }),
+            AppButton(
+                text: "Folder Screen",
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => FolderListScreen()));
                 }),
           ],
         ),
