@@ -63,7 +63,7 @@ dependencies:
   reorderables: ^0.6.0
   wechat_assets_picker: ^9.8.0
   share_plus: ^11.1.0
-  flutter_windowmanager: ^0.2.0
+
 
 
 

@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:folderlockerapp/view/media/controller/pic_con.dart';
 import 'package:folderlockerapp/view/media/ui/image_preview.dart';
 import 'package:get/get.dart';
+import 'package:photo_manager/photo_manager.dart';
 
-class MediaScreenView extends StatelessWidget {
-  const MediaScreenView({super.key});
+class MediaScreenViewone extends StatelessWidget {
+  const MediaScreenViewone({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,34 +52,18 @@ class MediaScreenView extends StatelessWidget {
                 final isSelected = con.selectedImages.contains(image);
 
                 return GestureDetector(
-                  // onLongPress: () => con.toggleSelection(image),
-                  // onTap: () {
-                  //   if (con.selectedImages.isNotEmpty) {
-                  //     con.toggleSelection(image);
-                  //   }
-                  // },
                   onLongPress: () {
-                    if (con.selectedImages.isEmpty) {
-                      con.toggleSelection(image);
-                    }
+                    if (con.selectedImages.isEmpty) con.toggleSelection(image);
                   },
-                  // onTap: () {
-                  //   if (con.selectedImages.isNotEmpty) {
-                  //     con.toggleSelection(image);
-                  //   } else {
-                  //     // Optional: open preview when not in selection mode
-                  //     Get.to(() => ImagePreviewScreen(image: image));
-                  //   }
-                  // },
                   onTap: () {
                     if (con.selectedImages.isNotEmpty) {
                       con.toggleSelection(image);
                     } else {
                       final allImages = List<File>.from(con.lockedImages);
-                      final index = allImages.indexOf(image);
+                      final initialIndex = allImages.indexOf(image);
                       Get.to(() => ImagePreviewScreen(
                             allImages: allImages,
-                            initialIndex: index,
+                            initialIndex: initialIndex,
                           ));
                     }
                   },
@@ -113,7 +98,7 @@ class MediaScreenView extends StatelessWidget {
           );
         }
 
-        // Show options when selection active
+        // Selection active: show action buttons
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.all(8),
@@ -125,6 +110,7 @@ class MediaScreenView extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Unlock
               IconButton(
                   icon: const Icon(Icons.lock_open, color: Colors.green),
                   onPressed: () {
@@ -133,8 +119,47 @@ class MediaScreenView extends StatelessWidget {
                     }
                     con.selectedImages.clear();
                   }),
+              // Delete from Hive/app only
               IconButton(icon: const Icon(Icons.delete, color: Colors.red), onPressed: con.deleteSelected),
+              // Share
               IconButton(icon: const Icon(Icons.share, color: Colors.blue), onPressed: con.shareSelected),
+              // Delete from Gallery button
+              IconButton(
+                icon: const Icon(Icons.delete_forever, color: Colors.purple),
+                tooltip: "Delete from Gallery",
+                onPressed: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Delete from Gallery"),
+                      content: const Text("Are you sure you want to delete selected images from your gallery?"),
+                      actions: [
+                        TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("No")),
+                        TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Yes")),
+                      ],
+                    ),
+                  );
+                  if (confirm != true) return;
+
+                  // Delete each image using PhotoManager
+                  for (final img in con.selectedImages) {
+                    final key = con.lockedImages.indexOf(img);
+                    if (key != -1) {
+                      try {
+                        // Delete from system gallery
+                        await PhotoManager.editor.deleteWithIds([con.lockedImages[key].path]);
+                        // Remove from Hive
+                        await con.box.delete(con.lockedImages[key].path);
+                        con.lockedImages.removeAt(key);
+                      } catch (e) {
+                        debugPrint("Error deleting from gallery: $e");
+                      }
+                    }
+                  }
+                  con.selectedImages.clear();
+                  Get.snackbar("Deleted", "Images deleted from gallery", snackPosition: SnackPosition.BOTTOM);
+                },
+              ),
             ],
           ),
         );

@@ -123,6 +123,14 @@ class MediaController extends GetxController {
     selectedImages.clear();
   }
 
+  void selectAllImages() {
+    selectedImages.assignAll(lockedImages);
+  }
+
+  void clearSelection() {
+    selectedImages.clear();
+  }
+
   Future<void> shareSelected() async {
     if (selectedImages.isEmpty) return;
     try {

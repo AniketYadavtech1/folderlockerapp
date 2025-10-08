@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:folderlockerapp/view/fmedia/ui/media.dart';
 import 'package:folderlockerapp/view/media/hidden_img2.dart';
+import 'package:folderlockerapp/view/media/ui/new_media_screen.dart';
+import 'package:folderlockerapp/view/media/ui/new_one.dart';
 import 'package:folderlockerapp/view/themes/utill/app_button.dart';
 import 'package:get/get.dart';
 
@@ -57,6 +59,17 @@ class _HomeViewState extends State<HomeView> {
                 text: "Folder Screen",
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => FolderListScreen()));
+                }),
+            SizedBox(width: 10),
+            AppButton(
+                text: "Gallery Delition",
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => GalleryDeleteScreen()));
+                }),
+            AppButton(
+                text: "Gallery Delition",
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => MediaScreenViewone()));
                 }),
           ],
         ),
