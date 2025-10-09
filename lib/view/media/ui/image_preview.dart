@@ -63,9 +63,9 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white10,
         title: Text(
           "Image ${_currentIndex + 1} / ${widget.allImages.length}",
           style: const TextStyle(color: Colors.white),

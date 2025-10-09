@@ -49,27 +49,12 @@ class MediaScreenView extends StatelessWidget {
               children: List.generate(con.lockedImages.length, (index) {
                 final image = con.lockedImages[index];
                 final isSelected = con.selectedImages.contains(image);
-
                 return GestureDetector(
-                  // onLongPress: () => con.toggleSelection(image),
-                  // onTap: () {
-                  //   if (con.selectedImages.isNotEmpty) {
-                  //     con.toggleSelection(image);
-                  //   }
-                  // },
                   onLongPress: () {
                     if (con.selectedImages.isEmpty) {
                       con.toggleSelection(image);
                     }
                   },
-                  // onTap: () {
-                  //   if (con.selectedImages.isNotEmpty) {
-                  //     con.toggleSelection(image);
-                  //   } else {
-                  //     // Optional: open preview when not in selection mode
-                  //     Get.to(() => ImagePreviewScreen(image: image));
-                  //   }
-                  // },
                   onTap: () {
                     if (con.selectedImages.isNotEmpty) {
                       con.toggleSelection(image);

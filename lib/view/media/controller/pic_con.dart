@@ -144,10 +144,11 @@ class MediaController extends GetxController {
     }
   }
 
-  // folder
   RxBool isGridView = false.obs;
-
   void toggleView() => isGridView.value = !isGridView.value;
+  void toggleViewMode() {
+    isGridView.value = !isGridView.value;
+  }
 
   Future<void> loadFolders() async {
     final appDir = await getApplicationDocumentsDirectory();
@@ -167,13 +168,5 @@ class MediaController extends GetxController {
       await newFolder.create(recursive: true);
       folders.add(newFolder);
     }
-  }
-
-  Future<void> deleteFolder(Directory folder) async {
-    try {
-      if (await folder.exists()) {
-        await folder.delete(recursive: true);
-      } else {}
-    } catch (e) {}
   }
 }
