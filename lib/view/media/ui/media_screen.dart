@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:folderlockerapp/view/auth/ui/side_drower.dart';
 import 'package:folderlockerapp/view/media/controller/media_con.dart';
-import 'package:folderlockerapp/view/media/controller/new_mediacon.dart';
 import 'package:folderlockerapp/view/media/ui/image_preview.dart';
 import 'package:folderlockerapp/view/themes/controller/theme_controller.dart';
 import 'package:folderlockerapp/view/themes/utill/app_colors.dart';
@@ -28,16 +27,19 @@ class MediaScreenView extends StatelessWidget {
         title: Text("New Media", style: AppTextStyles.kBody17SemiBoldTextStyle),
         backgroundColor: AppColors.isDarkMode ? AppColors.transparent : AppColors.white,
         actions: [
+          // Theme toggle
           Obx(() => CupertinoSwitch(
                 value: themCon.isDarkMode.value,
                 activeTrackColor: const Color(0xff78C841),
                 inactiveTrackColor: const Color(0xffFF4646),
                 onChanged: (v) => themCon.toggleTheme(),
               )),
+          // Grid/List toggle
           Obx(() => IconButton(
                 icon: Icon(con.isGridView.value ? Icons.view_list : Icons.grid_view),
                 onPressed: con.toggleViewMode,
               )),
+          // Select all checkbox
           Obx(() {
             if (con.lockedImages.isNotEmpty) {
               return Checkbox(
@@ -76,7 +78,7 @@ class MediaScreenView extends StatelessWidget {
                     }
                     final image = con.visibleImages[index];
                     final isSelected = con.selectedImages.contains(image);
-                    return _buildImageItem(con as NewMediaController, image, isSelected);
+                    return _buildImageItem(con, image, isSelected);
                   },
                 )
               : ListView.builder(
@@ -89,7 +91,7 @@ class MediaScreenView extends StatelessWidget {
                     }
                     final image = con.visibleImages[index];
                     final isSelected = con.selectedImages.contains(image);
-                    return _buildImageItem(con as NewMediaController, image, isSelected);
+                    return _buildImageItem(con, image, isSelected);
                   },
                 );
         }),
@@ -101,12 +103,12 @@ class MediaScreenView extends StatelessWidget {
             child: const Icon(Icons.add),
           );
         }
-        return _buildActionButtons(con as NewMediaController);
+        return _buildActionButtons(con);
       }),
     );
   }
 
-  Widget _buildImageItem(NewMediaController con, File image, bool isSelected) {
+  Widget _buildImageItem(MediaController con, File image, bool isSelected) {
     return GestureDetector(
       onLongPress: () {
         if (con.selectedImages.isEmpty) con.toggleSelection(image);
@@ -135,7 +137,7 @@ class MediaScreenView extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons(NewMediaController con) {
+  Widget _buildActionButtons(MediaController con) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(8),
@@ -156,7 +158,10 @@ class MediaScreenView extends StatelessWidget {
               con.selectedImages.clear();
             },
           ),
-          IconButton(icon: const Icon(Icons.delete, color: Colors.red), onPressed: con.deleteSelected),
+          IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: con.deleteSelected,
+          ),
         ],
       ),
     );
