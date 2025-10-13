@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:folderlockerapp/view/media/controller/pic_con.dart';
+import 'package:folderlockerapp/view/media/controller/new_mediacon.dart';
+import 'package:folderlockerapp/view/media/ui/media_screen.dart';
 import 'package:folderlockerapp/view/media/ui/new_media.dart';
 import 'package:folderlockerapp/view/themes/utill/app_button.dart';
 import 'package:get/get.dart';
@@ -12,7 +13,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final con = Get.put(MediaController());
+  final con = Get.put(NewMediaController());
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +28,17 @@ class _HomeViewState extends State<HomeView> {
           children: [
             SizedBox(height: 20),
             AppButton(
-                text: "Gallery Delition",
+                text: "New MediaScreenView",
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => NewMediaScreenView()));
                 }),
             SizedBox(height: 20),
-            SizedBox(width: 10),
+            AppButton(
+                text: "MediaScreenView",
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => MediaScreenView()));
+                }),
+            SizedBox(height: 20),
           ],
         ),
       ),

@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:folderlockerapp/view/media/controller/pic_con.dart';
+import 'package:folderlockerapp/view/media/controller/new_mediacon.dart';
+import 'package:folderlockerapp/view/themes/utill/app_colors.dart';
+import 'package:folderlockerapp/view/themes/utill/indicator.dart';
 import 'package:get/get.dart';
 
 class ImagePreviewScreen extends StatefulWidget {
@@ -21,7 +23,7 @@ class ImagePreviewScreen extends StatefulWidget {
 class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
   late PageController _pageController;
   late int _currentIndex;
-  final con = Get.find<MediaController>();
+  final con = Get.find<NewMediaController>();
 
   @override
   void initState() {
@@ -98,9 +100,27 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
                 minScale: 0.5,
                 maxScale: 4.0,
                 clipBehavior: Clip.none,
-                child: Image.file(
-                  image,
-                  fit: BoxFit.contain,
+                child: Stack(
+                  children: [
+                    Image.file(
+                      image,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          Icons.add,
+                          weight: 100,
+                          size: 200,
+                        );
+                      },
+                      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                        if (frame == null) {
+                          return Indicator(color: AppColors.primary1);
+                        }
+                        return child;
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),

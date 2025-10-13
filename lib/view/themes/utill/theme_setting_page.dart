@@ -53,7 +53,6 @@ class ThemeSettingsScreen extends StatelessWidget {
                   ],
                 ),
               ),
-
               Obx(() {
                 final selectedColor = themeController.primaryColor.value;
                 final visibleCount = themeController.visibleColorCount.value;
@@ -101,45 +100,8 @@ class ThemeSettingsScreen extends StatelessWidget {
                   ),
                 );
               }),
-
-              /// ✅ Observe color
-              // Obx(() {
-              //   final selectedColor = themeController.primaryColor.value;
-              //
-              //   return GridView.builder(
-              //   shrinkWrap: true,
-              //   physics: const NeverScrollableScrollPhysics(),
-              //   itemCount: kAvailableColors.length,
-              //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              //     crossAxisCount: 5,
-              //     crossAxisSpacing: 12,
-              //     mainAxisSpacing: 12,
-              //     childAspectRatio: 1,
-              //   ),
-              //   itemBuilder: (_, index) {
-              //     final color = kAvailableColors[index];
-              //     final isSelected = color == selectedColor;
-              //     return GestureDetector(
-              //       onTap: () => themeController.setPrimaryColor(color),
-              //       child: Container(
-              //         decoration: BoxDecoration(
-              //           color: color,
-              //           shape: BoxShape.circle,
-              //           border: Border.all(
-              //             color: isSelected ? Colors.black : Colors.transparent,
-              //             width: 2,
-              //           ),
-              //         ),
-              //       ),
-              //     );
-              //   },
-              // );
-              // }),
-
-              /// ✅ Observe font
               Obx(() {
                 final selectedFont = themeController.fontFamily.value;
-
                 return Visibility(
                   visible: themeController.isSelectedColor.value == 1,
                   child: Column(

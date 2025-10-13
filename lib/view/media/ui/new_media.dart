@@ -1,8 +1,13 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:folderlockerapp/view/media/controller/pic_con.dart';
+import 'package:folderlockerapp/view/auth/ui/side_drower.dart';
+import 'package:folderlockerapp/view/media/controller/new_mediacon.dart';
 import 'package:folderlockerapp/view/media/ui/image_preview.dart';
+import 'package:folderlockerapp/view/themes/controller/theme_controller.dart';
+import 'package:folderlockerapp/view/themes/utill/app_colors.dart';
+import 'package:folderlockerapp/view/themes/utill/app_texts.dart';
 import 'package:get/get.dart';
 
 class NewMediaScreenView extends StatelessWidget {
@@ -10,18 +15,32 @@ class NewMediaScreenView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final con = Get.put(MediaController());
+    final con = Get.put<NewMediaController>(NewMediaController());
+    final themCon = Get.find<ThemeController>();
+
     return Scaffold(
+      backgroundColor: AppColors.isDarkMode ? AppColors.transparent : AppColors.white,
       appBar: AppBar(
-        title: const Text('Locked Images'),
+        title: Text(
+          "NewMediSeeep",
+          style: AppTextStyles.kBody17SemiBoldTextStyle,
+        ),
+        backgroundColor: AppColors.isDarkMode ? AppColors.transparent : AppColors.white,
         actions: [
-          // 🔘 Toggle Grid/List button
+          Obx(
+            () => CupertinoSwitch(
+              value: themCon.isDarkMode.value,
+              activeTrackColor: const Color(0xff78C841),
+              inactiveTrackColor: const Color(0xffFF4646),
+              onChanged: (v) async {
+                themCon.toggleTheme();
+              },
+            ),
+          ),
           Obx(() => IconButton(
                 icon: Icon(con.isGridView.value ? Icons.view_list : Icons.grid_view),
                 onPressed: con.toggleViewMode,
               )),
-
-          // ✅ Select All Checkbox
           Obx(() {
             if (con.lockedImages.isNotEmpty) {
               return Row(
@@ -44,13 +63,12 @@ class NewMediaScreenView extends StatelessWidget {
           }),
         ],
       ),
+      drawer: DrawerScreen(),
       body: SafeArea(
         child: Obx(() {
           if (con.lockedImages.isEmpty) {
             return const Center(child: Text("No locked images found."));
           }
-
-          // 🔄 Switch between Grid and List view dynamically
           return con.isGridView.value
               ? GridView(
                   padding: const EdgeInsets.all(8),
