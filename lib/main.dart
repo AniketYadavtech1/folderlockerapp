@@ -4,11 +4,16 @@ import 'package:folderlockerapp/view/auth/ui/splace.dart';
 import 'package:folderlockerapp/view/themes/controller/theme_controller.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:path_provider/path_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox<String>('locked_images');
+  // for video
+  final appDocDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDocDir.path);
+  await Hive.openBox<String>('locked_videos');
   runApp(const MyApp());
 }
 

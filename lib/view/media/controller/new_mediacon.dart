@@ -14,6 +14,7 @@ class NewMediaController extends GetxController {
   late Box<String> box;
   RxBool load = false.obs;
   var selectedImages = <File>[].obs;
+  RxBool loadAdd = false.obs;
 
   @override
   void onInit() {
@@ -24,31 +25,45 @@ class NewMediaController extends GetxController {
 
   void loadLockedImages() {
     load.value = true;
-    lockedImages.value = box.values.map((path) => File(path)).toList();
-    load.value = false;
+    Future.delayed(Duration(milliseconds: 300), () {
+      lockedImages.value = box.values.map((path) => File(path)).toList();
+      load.value = false;
+    });
   }
 
   Future<void> pickAndLockFromGallery(BuildContext context) async {
-    final permitted = await PhotoManager.requestPermissionExtend();
-    if (!permitted.isAuth) return;
-    final List<AssetEntity>? pickedAssets = await AssetPicker.pickAssets(
-      context,
-      pickerConfig: AssetPickerConfig(
-          requestType: RequestType.image, themeColor: AppColors.primary1, gridThumbnailSize: ThumbnailSize(100, 100)),
-    );
-    if (pickedAssets == null || pickedAssets.isEmpty) return;
-    for (final asset in pickedAssets) {
-      final file = await asset.file;
-      if (file != null) {
-        final appDir = await getApplicationDocumentsDirectory();
-        final newPath = "${appDir.path}/${DateTime.now().millisecondsSinceEpoch}_${file.uri.pathSegments.last}";
-        final newFile = await file.copy(newPath);
-        await box.put(newPath, newPath);
-        lockedImages.add(newFile);
+    try {
+      final permitted = await PhotoManager.requestPermissionExtend();
+      if (!permitted.isAuth) return;
+
+      if (!permitted.isAuth) return;
+      final List<AssetEntity>? pickedAssets = await AssetPicker.pickAssets(
+        context,
+        pickerConfig: AssetPickerConfig(
+            requestType: RequestType.video,
+            themeColor: AppColors.primary1,
+            gridThumbnailSize: ThumbnailSize(120, 120),
+            maxAssets: 1000),
+      );
+      if (pickedAssets == null || pickedAssets.isEmpty) return;
+      loadAdd.value = true;
+      for (final asset in pickedAssets) {
+        loadAdd.value = true;
+        final file = await asset.file;
+        if (file != null) {
+          final appDir = await getApplicationDocumentsDirectory();
+          final newPath = "${appDir.path}/${DateTime.now().millisecondsSinceEpoch}_${file.uri.pathSegments.last}";
+          final newFile = await file.copy(newPath);
+          await box.put(newPath, newPath);
+          loadAdd.value = true;
+          lockedImages.add(newFile);
+          loadAdd.value = false;
+        }
       }
+      await PhotoManager.editor.deleteWithIds(pickedAssets.map((a) => a.id).toList());
+    } catch (e) {
+      return;
     }
-    final deletedList = await PhotoManager.editor.deleteWithIds(pickedAssets.map((a) => a.id).toList());
-    debugPrint("Deleted ${deletedList.length} images from gallery.");
   }
 
   Future<void> deleteFromGallery(File file) async {

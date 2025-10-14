@@ -3,6 +3,7 @@ import 'package:folderlockerapp/view/media/controller/new_mediacon.dart';
 import 'package:folderlockerapp/view/media/ui/media_screen.dart';
 import 'package:folderlockerapp/view/media/ui/new_media.dart';
 import 'package:folderlockerapp/view/themes/utill/app_button.dart';
+import 'package:folderlockerapp/view/video/ui/video_screen.dart';
 import 'package:get/get.dart';
 
 class HomeView extends StatefulWidget {
@@ -37,6 +38,12 @@ class _HomeViewState extends State<HomeView> {
                 text: "MediaScreenView",
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => MediaScreenView()));
+                }),
+            SizedBox(height: 20),
+            AppButton(
+                text: "Video",
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => VideoScreen()));
                 }),
             SizedBox(height: 20),
           ],

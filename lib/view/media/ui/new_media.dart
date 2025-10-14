@@ -65,110 +65,124 @@ class NewMediaScreenView extends StatelessWidget {
       ),
       drawer: DrawerScreen(),
       body: SafeArea(
-        child: Obx(() {
-          if (con.lockedImages.isEmpty) {
-            return const Center(child: Text("No locked images found."));
-          }
-          return con.isGridView.value
-              ? GridView(
-                  padding: const EdgeInsets.all(8),
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                    childAspectRatio: 1,
-                  ),
-                  children: List.generate(con.lockedImages.length, (index) {
-                    final image = con.lockedImages[index];
-                    final isSelected = con.selectedImages.contains(image);
-                    return GestureDetector(
-                      onLongPress: () {
-                        if (con.selectedImages.isEmpty) {
-                          con.toggleSelection(image);
-                        }
-                      },
-                      onTap: () {
-                        if (con.selectedImages.isNotEmpty) {
-                          con.toggleSelection(image);
-                        } else {
-                          final allImages = List<File>.from(con.lockedImages);
-                          final index = allImages.indexOf(image);
-                          Get.to(() => ImagePreviewScreen(
-                                allImages: allImages,
-                                initialIndex: index,
-                              ));
-                        }
-                      },
-                      child: Stack(
-                        children: [
-                          Image.file(
-                            image,
-                            width: double.infinity,
-                            height: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                          if (isSelected)
-                            Positioned.fill(
-                              child: Container(
-                                color: Colors.black54,
-                                child: const Icon(Icons.check_circle, color: Colors.greenAccent, size: 40),
-                              ),
-                            ),
-                        ],
+        child: Obx(
+          () {
+            if (
+                // con.lockedImages.isEmpty
+                con.lockedImages.isEmpty && !con.load.value && !con.loadAdd.value) {
+              return const Center(child: Text("No locked images found."));
+            }
+            if (con.load.value || con.loadAdd.value) {
+              return Center(
+                child: LinearProgressIndicator(
+                  color: Colors.blue,
+                  backgroundColor: Colors.grey,
+                  minHeight: 10,
+                ),
+              );
+            } else {
+              return con.isGridView.value
+                  ? GridView(
+                      padding: const EdgeInsets.all(8),
+                      shrinkWrap: true,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                        childAspectRatio: 1,
                       ),
-                    );
-                  }),
-                )
-              : ListView.builder(
-                  itemCount: con.lockedImages.length,
-                  padding: const EdgeInsets.all(8),
-                  itemBuilder: (context, index) {
-                    final image = con.lockedImages[index];
-                    final isSelected = con.selectedImages.contains(image);
-                    return GestureDetector(
-                      onLongPress: () {
-                        if (con.selectedImages.isEmpty) {
-                          con.toggleSelection(image);
-                        }
-                      },
-                      onTap: () {
-                        if (con.selectedImages.isNotEmpty) {
-                          con.toggleSelection(image);
-                        } else {
-                          final allImages = List<File>.from(con.lockedImages);
-                          final index = allImages.indexOf(image);
-                          Get.to(() => ImagePreviewScreen(
-                                allImages: allImages,
-                                initialIndex: index,
-                              ));
-                        }
-                      },
-                      child: Stack(
-                        children: [
-                          Card(
-                            clipBehavior: Clip.hardEdge,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                            child: Image.file(
-                              image,
-                              width: double.infinity,
-                              height: 200,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          if (isSelected)
-                            Positioned.fill(
-                              child: Container(
-                                color: Colors.black54,
-                                child: const Icon(Icons.check_circle, color: Colors.greenAccent, size: 40),
+                      children: List.generate(con.lockedImages.length, (index) {
+                        final image = con.lockedImages[index];
+                        final isSelected = con.selectedImages.contains(image);
+                        return GestureDetector(
+                          onLongPress: () {
+                            if (con.selectedImages.isEmpty) {
+                              con.toggleSelection(image);
+                            }
+                          },
+                          onTap: () {
+                            if (con.selectedImages.isNotEmpty) {
+                              con.toggleSelection(image);
+                            } else {
+                              final allImages = List<File>.from(con.lockedImages);
+                              final index = allImages.indexOf(image);
+                              Get.to(() => ImagePreviewScreen(
+                                    allImages: allImages,
+                                    initialIndex: index,
+                                  ));
+                            }
+                          },
+                          child: Stack(
+                            children: [
+                              Image.file(
+                                image,
+                                width: double.infinity,
+                                height: double.infinity,
+                                fit: BoxFit.cover,
                               ),
-                            ),
-                        ],
-                      ),
+                              if (isSelected)
+                                Positioned.fill(
+                                  child: Container(
+                                    color: Colors.black54,
+                                    child: const Icon(Icons.check_circle, color: Colors.greenAccent, size: 40),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      }),
+                    )
+                  : ListView.builder(
+                      itemCount: con.lockedImages.length,
+                      padding: const EdgeInsets.all(8),
+                      itemBuilder: (context, index) {
+                        final image = con.lockedImages[index];
+                        final isSelected = con.selectedImages.contains(image);
+                        return GestureDetector(
+                          onLongPress: () {
+                            if (con.selectedImages.isEmpty) {
+                              con.toggleSelection(image);
+                            }
+                          },
+                          onTap: () {
+                            if (con.selectedImages.isNotEmpty) {
+                              con.toggleSelection(image);
+                            } else {
+                              final allImages = List<File>.from(con.lockedImages);
+                              final index = allImages.indexOf(image);
+                              Get.to(() => ImagePreviewScreen(
+                                    allImages: allImages,
+                                    initialIndex: index,
+                                  ));
+                            }
+                          },
+                          child: Stack(
+                            children: [
+                              Card(
+                                clipBehavior: Clip.hardEdge,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                child: Image.file(
+                                  image,
+                                  width: double.infinity,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              if (isSelected)
+                                Positioned.fill(
+                                  child: Container(
+                                    color: Colors.black54,
+                                    child: const Icon(Icons.check_circle, color: Colors.greenAccent, size: 40),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
                     );
-                  },
-                );
-        }),
+            }
+          },
+        ),
       ),
       floatingActionButton: Obx(() {
         if (con.selectedImages.isEmpty) {
